@@ -1,25 +1,56 @@
+// import 'dart:convert';
+
+// import 'package:http/http.dart' as http;
+
+// class HttpStateful {
+//   String id, fullname, email, avatar;
+
+//   HttpStateful({
+//     required this.avatar,
+//     required this.email,
+//     required this.fullname,
+//     required this.id,
+//   });
+
+//   static Future<HttpStateful>(String id) async {
+//     Uri url = Uri.parse("https://reqres.in/api/users/" + id);
+
+//     var hasilResponse = await http.get(url);
+
+//     var data = (json.decode(hasilResponse.body))["data"];
+
+//     return HttpStateful(
+//       id: data["id"].toString(),
+//       fullname: data["first_name" + " " + "last_name"],
+//       avatar: data["avatar"],
+//       email: data["email"],
+//     );
+//   }
+// }
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class HttpStateful {
-  String? id;
-  String? name;
-  String? job;
-  String? createdAt;
+  String id, fullname, email, avatar;
 
-  HttpStateful({this.createdAt, this.id, this.job, this.name});
+  HttpStateful({
+    required this.avatar,
+    required this.email,
+    required this.fullname,
+    required this.id,
+  });
 
-  static Future<HttpStateful> connectAPI(String name, String job) async {
-    Uri url = Uri.parse("https://reqres.in/api/users");
-
-    var hasilResponse = await http.post(url, body: {"name": name, "job": job});
-    var data = json.decode(hasilResponse.body);
+  static Future<HttpStateful> connectAPI(String id) async {
+    Uri url = Uri.parse("https://reqres.in/api/users/$id");
+    var hasilResponse = await http.get(url);
+    var data = json.decode(hasilResponse.body)["data"];
 
     return HttpStateful(
-      id: data["id"],
-      name: name,
-      job: job,
-      createdAt: data["createdAt"],
+      id: data["id"].toString(),
+      fullname: '${data["first_name"]} ${data["last_name"]}',
+      avatar: data["avatar"],
+      email: data["email"],
     );
   }
 }
