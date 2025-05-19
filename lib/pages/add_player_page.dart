@@ -97,12 +97,13 @@ class AddPlayer extends StatelessWidget {
                           print("Kembali ke Home & kasih notif snack bar");
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text("Berhasil ditambahkan"),
+                              content: Text("Berhasil Ditambahkan"),
                               duration: Duration(seconds: 2),
                             ),
                           );
-                          Navigator.pop(context);
                         });
+
+                    Navigator.pop(context);
                   },
                   child: Text("Submit", style: TextStyle(fontSize: 18)),
                 ),

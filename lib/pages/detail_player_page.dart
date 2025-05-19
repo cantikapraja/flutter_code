@@ -9,19 +9,18 @@ class DetailPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final players = Provider.of<Players>(context, listen: false);
-    final playerId = ModalRoute.of(context)!.settings.arguments as String;
+    final playerId = ModalRoute.of(context)?.settings.arguments as String;
     final selectPLayer = players.selectById(playerId);
-    final TextEditingController imageController = TextEditingController(
-      text: selectPLayer.imageUrl,
-    );
-    final TextEditingController nameController = TextEditingController(
-      text: selectPLayer.name,
-    );
-    final TextEditingController positionController = TextEditingController(
-      text: selectPLayer.position,
-    );
+    final TextEditingController imageController =
+        TextEditingController(text: selectPLayer.imageUrl);
+    final TextEditingController nameController =
+        TextEditingController(text: selectPLayer.name);
+    final TextEditingController positionController =
+        TextEditingController(text: selectPLayer.position);
     return Scaffold(
-      appBar: AppBar(title: Text("DETAIL PLAYER")),
+      appBar: AppBar(
+        title: Text("DETAIL PLAYER"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
@@ -85,7 +84,12 @@ class DetailPlayer extends StatelessWidget {
                     );
                     Navigator.pop(context);
                   },
-                  child: Text("Edit", style: TextStyle(fontSize: 18)),
+                  child: Text(
+                    "Edit",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
               ),
             ],

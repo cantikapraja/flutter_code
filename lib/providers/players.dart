@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../models/player.dart';
@@ -17,9 +16,8 @@ class Players with ChangeNotifier {
   Future<void> addPlayer(String name, String position, String image) {
     DateTime datetimeNow = DateTime.now();
 
-
     Uri url = Uri.parse(
-      "https://http-req-eafc5-default-rtdb.firebaseio.com/players.json",
+      "https://http-new-74586-default-rtdb.firebaseio.com/players/data.json",
     );
     return http
         .post(
