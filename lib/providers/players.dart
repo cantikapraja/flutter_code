@@ -1,6 +1,8 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import '../models/player.dart';
 
 class Players with ChangeNotifier {
@@ -17,7 +19,7 @@ class Players with ChangeNotifier {
     DateTime datetimeNow = DateTime.now();
 
     Uri url = Uri.parse(
-      "https://http-new-74586-default-rtdb.firebaseio.com/players/data.json",
+      "https://http-new-74586-default-rtdb.firebaseio.com/players.json",
     );
     return http
         .post(
@@ -45,35 +47,71 @@ class Players with ChangeNotifier {
         });
   }
 
-  void editPlayer(
+  Future<void> editPlayer(
     String id,
     String name,
     String position,
     String image,
-    BuildContext context,
   ) {
-    Player selectPlayer = _allPlayer.firstWhere((element) => element.id == id);
-    selectPlayer.name = name;
-    selectPlayer.position = position;
-    selectPlayer.imageUrl = image;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Berhasil diubah"),
-        duration: Duration(seconds: 2),
-      ),
+    Uri url = Uri.parse(
+      "https://http-new-74586-default-rtdb.firebaseio.com/players/$id.json",
     );
-    notifyListeners();
+    return http
+        .put(
+          url,
+          body: json.encode({
+            "name": name,
+            "position": position,
+            "imageUrl": image,
+          }),
+        )
+        .then((response) {
+          Player selectPlayer = _allPlayer.firstWhere(
+            (element) => element.id == id,
+          );
+          selectPlayer.name = name;
+          selectPlayer.position = position;
+          selectPlayer.imageUrl = image;
+          notifyListeners();
+        });
   }
 
-  void deletePlayer(String id, BuildContext context) {
-    _allPlayer.removeWhere((element) => element.id == id);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Berhasil dihapus"),
-        duration: Duration(milliseconds: 500),
-      ),
+  Future<void> deletePlayer(String id) {
+    Uri url = Uri.parse(
+      "https://http-new-74586-default-rtdb.firebaseio.com/players/$id.json",
     );
+    return http.delete(url).then((response) {
+      _allPlayer.removeWhere((element) => element.id == id);
+      notifyListeners();
+    });
+  }
+
+  initialData() {
+    Uri url = Uri.parse(
+      "https://http-new-74586-default-rtdb.firebaseio.com/players.json",
+    );
+
+    http.get(url).then((value) {
+      var dataResponse = json.decode(value.body) as Map<String, dynamic>;
+
+      dataResponse.forEach((key, value) {
+        DateTime dateTimeParse = DateFormat(
+          "yyyy-MM-dd HH:mm:ss",
+        ).parse(value["createdAt"]);
+
+        print(dateTimeParse);
+        _allPlayer.add(
+          Player(
+            id: key,
+            createdAt: dateTimeParse,
+            imageUrl: value["imageUrl"],
+            name: value["name"],
+            position: value["position"],
+          ),
+        );
+      });
+      print("Berhasil masukan data list");
+    });
     notifyListeners();
   }
 }

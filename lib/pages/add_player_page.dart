@@ -21,20 +21,22 @@ class AddPlayer extends StatelessWidget {
             onPressed: () {
               players
                   .addPlayer(
-                    nameController.text,
-                    positionController.text,
-                    imageController.text,
-                  )
-                  .then((response) {
-                    print("Kembali ke Home & kasih notif snack bar");
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Berhasil ditambahkan"),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                    Navigator.pop(context);
-                  });
+                nameController.text,
+                positionController.text,
+                imageController.text,
+              )
+                  .then(
+                (response) {
+                  print("Kembali ke Home & kasih notif snack bar");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Berhasil ditambahkan"),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  Navigator.pop(context);
+                },
+              );
             },
           ),
         ],
@@ -65,20 +67,22 @@ class AddPlayer extends StatelessWidget {
                 onEditingComplete: () {
                   players
                       .addPlayer(
-                        nameController.text,
-                        positionController.text,
-                        imageController.text,
-                      )
-                      .then((response) {
-                        print("Kembali ke Home & kasih notif snack bar");
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Berhasil ditambahkan"),
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                        Navigator.pop(context);
-                      });
+                    nameController.text,
+                    positionController.text,
+                    imageController.text,
+                  )
+                      .then(
+                    (response) {
+                      print("Kembali ke Home & kasih notif snack bar");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Berhasil ditambahkan"),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                      Navigator.pop(context);
+                    },
+                  );
                 },
               ),
               SizedBox(height: 50),
@@ -89,23 +93,29 @@ class AddPlayer extends StatelessWidget {
                   onPressed: () {
                     players
                         .addPlayer(
-                          nameController.text,
-                          positionController.text,
-                          imageController.text,
-                        )
-                        .then((response) {
-                          print("Kembali ke Home & kasih notif snack bar");
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Berhasil Ditambahkan"),
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
-                        });
-
-                    Navigator.pop(context);
+                      nameController.text,
+                      positionController.text,
+                      imageController.text,
+                    )
+                        .then(
+                      (response) {
+                        print("Kembali ke Home & kasih notif snack bar");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Berhasil ditambahkan"),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                        Navigator.pop(context);
+                      },
+                    );
                   },
-                  child: Text("Submit", style: TextStyle(fontSize: 18)),
+                  child: Text(
+                    "Submit",
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
               ),
             ],
