@@ -86,32 +86,33 @@ class Players with ChangeNotifier {
     });
   }
 
-  initialData() {
+  Future<void> initialData() async {
     Uri url = Uri.parse(
       "https://http-new-74586-default-rtdb.firebaseio.com/players.json",
     );
 
-    http.get(url).then((value) {
-      var dataResponse = json.decode(value.body) as Map<String, dynamic>;
+    var hasilGetData = await http.get(url);
 
-      dataResponse.forEach((key, value) {
-        DateTime dateTimeParse = DateFormat(
-          "yyyy-MM-dd HH:mm:ss",
-        ).parse(value["createdAt"]);
+    var dataResponse = json.decode(hasilGetData.body) as Map<String, dynamic>;
 
-        print(dateTimeParse);
-        _allPlayer.add(
-          Player(
-            id: key,
-            createdAt: dateTimeParse,
-            imageUrl: value["imageUrl"],
-            name: value["name"],
-            position: value["position"],
-          ),
-        );
-      });
-      print("Berhasil masukan data list");
+    dataResponse.forEach((key, value) {
+      DateTime dateTimeParse = DateFormat(
+        "yyyy-MM-dd HH:mm:ss",
+      ).parse(value["createdAt"]);
+
+      print(dateTimeParse);
+      _allPlayer.add(
+        Player(
+          id: key,
+          createdAt: dateTimeParse,
+          imageUrl: value["imageUrl"],
+          name: value["name"],
+          position: value["position"],
+        ),
+      );
     });
-    notifyListeners();
+    print("Berhasil masukan data list");
   }
+
+  notifyListeners();
 }
