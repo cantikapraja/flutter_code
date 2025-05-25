@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,7 @@ import '../providers/players.dart';
 
 class HomePage extends StatefulWidget {
   @override
-  State<HomePage> createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -68,11 +69,24 @@ class _HomePageState extends State<HomePage> {
                         arguments: id,
                       );
                     },
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        allPlayerProvider.allPlayer[index].imageUrl,
+                    // leading: CircleAvatar(
+                    // backgroundImage: NetworkImage(
+                    // allPlayerProvider.allPlayer[index],imageUrl,),),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        child: CachedNetworkImage(
+                          imageUrl: allPlayerProvider.allPlayer[index].imageUrl,
+                          placeholder:
+                              (context, url) => CircularProgressIndicator(),
+                          errorWidget:
+                              (context, url, error) => Icon(Icons.error),
+                        ),
                       ),
                     ),
+
                     title: Text(allPlayerProvider.allPlayer[index].name),
                     subtitle: Text(
                       DateFormat.yMMMMd().format(

@@ -15,75 +15,90 @@ class Players with ChangeNotifier {
   Player selectById(String id) =>
       _allPlayer.firstWhere((element) => element.id == id);
 
-  Future<void> addPlayer(String name, String position, String image) {
+  addPlayer(String name, String position, String image) async {
     DateTime datetimeNow = DateTime.now();
 
     Uri url = Uri.parse(
       "https://http-new-74586-default-rtdb.firebaseio.com/players.json",
     );
-    return http
-        .post(
-          url,
-          body: json.encode({
-            "name": name,
-            "position": position,
-            "imageUrl": image,
-            "createdAt": datetimeNow.toString(),
-          }),
-        )
-        .then((response) {
-          print("THEN FUNCTION");
-          _allPlayer.add(
-            Player(
-              id: json.decode(response.body)["name"].toString(),
-              name: name,
-              position: position,
-              imageUrl: image,
-              createdAt: datetimeNow,
-            ),
-          );
 
-          notifyListeners();
-        });
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode({
+          "name": name,
+          "position": position,
+          "imageUrl": image,
+          "createdAt": datetimeNow.toString(),
+        }),
+      );
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        _allPlayer.add(
+          Player(
+            id: json.decode(response.body)["name"].toString(),
+            name: name,
+            position: position,
+            imageUrl: image,
+            createdAt: datetimeNow,
+          ),
+        );
+
+        notifyListeners();
+      } else {
+        throw ("${response.statusCode}");
+      }
+    } catch (error) {
+      throw (error);
+    }
   }
 
-  Future<void> editPlayer(
-    String id,
-    String name,
-    String position,
-    String image,
-  ) {
+  editPlayer(String id, String name, String position, String image) async {
+    Uri url = Uri.parse(
+      "https://http-new-74586-default-rtdb.firebaseio.com/$id.json",
+    );
+
+    try {
+      final response = await http.patch(
+        url,
+        body: json.encode({
+          "name": name,
+          "position": position,
+          "imageUrl": image,
+        }),
+      );
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        Player selectPlayer = _allPlayer.firstWhere(
+          (element) => element.id == id,
+        );
+        selectPlayer.name = name;
+        selectPlayer.position = position;
+        selectPlayer.imageUrl = image;
+        notifyListeners();
+      } else {
+        throw ("${response.statusCode}");
+      }
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  deletePlayer(String id) async {
     Uri url = Uri.parse(
       "https://http-new-74586-default-rtdb.firebaseio.com/players/$id.json",
     );
-    return http
-        .put(
-          url,
-          body: json.encode({
-            "name": name,
-            "position": position,
-            "imageUrl": image,
-          }),
-        )
-        .then((response) {
-          Player selectPlayer = _allPlayer.firstWhere(
-            (element) => element.id == id,
-          );
-          selectPlayer.name = name;
-          selectPlayer.position = position;
-          selectPlayer.imageUrl = image;
-          notifyListeners();
-        });
-  }
 
-  Future<void> deletePlayer(String id) {
-    Uri url = Uri.parse(
-      "https://http-new-74586-default-rtdb.firebaseio.com/players/$id.json",
-    );
-    return http.delete(url).then((response) {
-      _allPlayer.removeWhere((element) => element.id == id);
-      notifyListeners();
-    });
+    try {
+      final response = await http.delete(url).then((response) {
+        _allPlayer.removeWhere((element) => element.id == id);
+        notifyListeners();
+      });
+
+      if (response.statusCode < 200 && response.statusCode >= 300) {
+        throw ("${response.statusCode}");
+      }
+    } catch (error) {
+      throw (error);
+    }
   }
 
   Future<void> initialData() async {
@@ -95,24 +110,24 @@ class Players with ChangeNotifier {
 
     var dataResponse = json.decode(hasilGetData.body) as Map<String, dynamic>;
 
-    dataResponse.forEach((key, value) {
-      DateTime dateTimeParse = DateFormat(
-        "yyyy-MM-dd HH:mm:ss",
-      ).parse(value["createdAt"]);
+    if (dataResponse != null) {
+      dataResponse.forEach((key, value) {
+        DateTime dateTimeParse = DateFormat(
+          "yyyy-mm-dd hh:mm:ss",
+        ).parse(value["createdAt"]);
+        _allPlayer.add(
+          Player(
+            id: key,
+            createdAt: dateTimeParse,
+            imageUrl: value["imageUrl"],
+            name: value["name"],
+            position: value["position"],
+          ),
+        );
+      });
+      print("BERHASIL MASUKAN DATA LIST");
 
-      print(dateTimeParse);
-      _allPlayer.add(
-        Player(
-          id: key,
-          createdAt: dateTimeParse,
-          imageUrl: value["imageUrl"],
-          name: value["name"],
-          position: value["position"],
-        ),
-      );
-    });
-    print("Berhasil masukan data list");
+      notifyListeners();
+    }
   }
-
-  notifyListeners();
 }
